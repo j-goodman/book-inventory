@@ -20,6 +20,17 @@
                         <th>Units Sold</th>
                     </tr>
                 </thead>
+                <tbody>
+                    <% books.forEach((book) => { %>
+                        <tr>
+                            <td><%= book.title %></td>
+                            <td><%= book.author %></td>
+                            <td><%= book.publishingCompany %></td>
+                            <td><%= book.inventory %></td>
+                            <td><%= book.unitsSold %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
             </table>
         </div>
     </div>
