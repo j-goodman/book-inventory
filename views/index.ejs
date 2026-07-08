@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="books.png" type="image/png">
     <title>Book Inventory</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
-<body>
-    <div>
-        <h1>Book Inventory</h1>
+<body class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Book Inventory</h1>
 
-        <div>
-            <table>
-                <thead>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-dark">
                     <tr>
                         <th>Title</th>
                         <th>Author</th>
@@ -27,7 +28,11 @@
                             <td><%= book.title %></td>
                             <td><%= book.author %></td>
                             <td><%= book.publishingCompany %></td>
-                            <td><%= book.inventory %></td>
+                            <% if (book.inventory === 0) { %>
+                                <td class="bg-danger"><%= book.inventory %></td>
+                            <% } else { %>
+                                <td><%= book.inventory %></td>
+                            <% } %>
                             <td><%= book.unitsSold %></td>
                         </tr>
                     <% }) %>
