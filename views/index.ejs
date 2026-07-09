@@ -17,6 +17,8 @@
                     <tr>
                         <th>Title</th>
                         <th>Author</th>
+                        <th>Tags</th>
+                        <th>Language</th>
                         <th>Publishing Company</th>
                         <th>Inventory</th>
                         <th>Units Sold</th>
@@ -27,6 +29,12 @@
                         <tr>
                             <td><%= book.title %></td>
                             <td><%= book.author %></td>
+                            <td>
+                                <% book.tags.forEach((tag) => { %>
+                                    <div class="label label-info"><%= tag %></div>
+                                <% }) %>
+                            </td>
+                            <td><%= book.language %></td>
                             <td><%= book.publishingCompany %></td>
                             <% if (book.inventory === 0) { %>
                                 <td class="bg-danger"><%= book.inventory %></td>
