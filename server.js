@@ -25,11 +25,14 @@ const initializeDatabase = async () => {
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.get('/', (req, res) => {
-    res.render('index.ejs', { books: books })
+app.get('/', async (req, res) => {
+    const response = await fetch(`http://localhost:${PORT}/api/books`)
+    const books = await response.json()
+    res.render('index.ejs', {books: books})
 })
 
-app.get('/api/books', (req, res) => {
+app.get('/api/books', async (req, res) => {
+    const books = await booksCollection.find().toArray()
     res.json(books)
 })
 
