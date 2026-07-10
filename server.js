@@ -10,6 +10,7 @@ const app = express()
 
 const uri = process.env.MONGODB_URI
 const dbName = 'book-inventory'
+const shouldSeed = process.argv.includes('--seed')
 
 app.use(express.json())
 
@@ -32,10 +33,47 @@ app.get('/api/books', (req, res) => {
     res.json(books)
 })
 
-app.post('/api/books', async (req, res) => {})
+app.post('/api/books', async (req, res) => {
+    const inserted = await booksCollection.insertOne(req.body)
+    res.status(201).json(inserted)
+})
+
+const seedDatabaseThroughApi = async () => {
+    await booksCollection.deleteMany({})
+
+    for (const book of books) {
+        const response = await fetch(`http://localhost:${PORT}/api/books`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(book)
+        })
+
+        if (!response.ok) {
+            const text = await response.text()
+            throw new Error(`Seed failed for "${book.title}": ${response.status} ${text}`)
+        }
+    }
+
+    console.log(`Seed complete: ${books.length} books inserted`)
+}
 
 initializeDatabase().then(() => {
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, async () => {
         console.log(`Server listening on port ${PORT}.`)
+
+        if (!shouldSeed) return
+
+        try {
+            await seedDatabaseThroughApi()
+            console.log('Manual seed finished')
+        } catch (error) {
+            console.error(error.message)
+            process.exitCode = 1
+        } finally {
+            server.close(() => process.exit(process.exitCode || 0))
+        }
     })
+}).catch((error) => {
+    console.error('Database initialization failed:', error.message)
+    process.exit(1)
 })
