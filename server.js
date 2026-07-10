@@ -28,7 +28,11 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.get('/', async (req, res) => {
     const response = await fetch(`http://localhost:${PORT}/api/books`)
     const books = await response.json()
-    res.render('index.ejs', {books: books})
+    if (req.query.tag) {
+        res.render('index.ejs', {books: books.filter(book => book.tags.includes(req.query.tag))})
+    } else {
+        res.render('index.ejs', {books: books})
+    }
 })
 
 app.get('/api/books', async (req, res) => {
